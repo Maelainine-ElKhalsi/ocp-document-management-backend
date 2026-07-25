@@ -9,6 +9,10 @@
 Backend API pour la plateforme OCP Documents. Gère l’authentification, les rôles, les services, axes, dossiers, fichiers et l’historique (audit logs).
 
 Ce dépôt contient **le backend** (Laravel 13). The frontend is available in a separate repository.
+
+## Related Repository
+
+- Frontend: https://github.com/Maelainine-ElKhalsi/ocp-document-management-frontend
 ---
 
 ## Demo
