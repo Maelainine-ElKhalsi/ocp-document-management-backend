@@ -1,58 +1,296 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# OCP Document Management Platform - Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)
+![Sanctum](https://img.shields.io/badge/Sanctum-4.x-2B2B2B?logo=laravel&logoColor=white)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Backend API pour la plateforme OCP Documents. Gère l’authentification, les rôles, les services, axes, dossiers, fichiers et l’historique (audit logs).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Ce dépôt contient **le backend** (Laravel 13). The frontend is available in a separate repository.
+---
 
-## Learning Laravel
+## Demo
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- API (par défaut): `http://localhost:8000`
+- Base de données: MySQL (par défaut)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Pourquoi ce projet ?
 
-## Agentic Development
+Ce backend fournit une API REST pour:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- Authentification des utilisateurs (JWT via Sanctum)
+- Gestion des services, axes, dossiers et fichiers
+- Contrôle d’accès par rôles (Admin / Chef / Technicien)
+- Historique des actions (audit logs) pour traçabilité
+
+---
+
+## Stack technique
+
+- **Laravel 13** (framework PHP)
+- **PHP 8.3**
+- **Laravel Sanctum** (authentification API)
+- **MySQL** (base de données par défaut, configurable pour SQLite/PostgreSQL)
+- **Eloquent ORM**
+
+---
+
+## Prérequis
+
+- PHP 8.3+
+- Composer
+- Node.js & npm (pour les assets frontend si inclus)
+
+---
+
+## Installation & démarrage
+
+### 1) Cloner le projet
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <url-du-repo>
+cd ocp-backend
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2) Installer les dépendances
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3) Configurer l’environnement
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4) Configurer la base de données
 
-## Security Vulnerabilities
+Par défaut, le projet utilise MySQL. Assure-toi que ton serveur MySQL est en cours d’exécution et configure `.env`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ocp_documents
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## License
+Si tu veux utiliser SQLite à la place, modifie `.env`:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```env
+DB_CONNECTION=sqlite
+```
+
+Et crée le fichier:
+
+```bash
+touch database/database.sqlite
+```
+
+### 5) Exécuter les migrations
+
+```bash
+php artisan migrate
+```
+
+### 6) Lancer le serveur
+
+```bash
+php artisan serve
+```
+
+L’API sera accessible sur `http://localhost:8000`.
+
+---
+
+## API Endpoints
+
+### Authentification
+
+- `POST /api/register` — Inscription
+- `POST /api/login` — Connexion (retourne token)
+- `POST /api/logout` — Déconnexion (protégé)
+- `GET /api/me` — Utilisateur connecté (protégé)
+
+### Services
+
+- `GET /api/services` — Liste des services
+- `POST /api/services` — Créer un service
+- `GET /api/services/{id}` — Détail d’un service
+- `PUT /api/services/{id}` — Modifier un service
+- `DELETE /api/services/{id}` — Supprimer un service
+
+### Axes
+
+- `GET /api/axes` — Liste des axes
+- `POST /api/axes` — Créer un axe
+- `GET /api/axes/{id}` — Détail d’un axe
+- `PUT /api/axes/{id}` — Modifier un axe
+- `DELETE /api/axes/{id}` — Supprimer un axe
+
+### Dossiers
+
+- `GET /api/dossiers` — Liste des dossiers
+- `POST /api/dossiers` — Créer un dossier
+- `GET /api/dossiers/{id}` — Détail d’un dossier
+- `PUT /api/dossiers/{id}` — Modifier un dossier
+- `DELETE /api/dossiers/{id}` — Supprimer un dossier
+
+### Fichiers
+
+- `GET /api/files` — Liste des fichiers
+- `POST /api/files` — Uploader un fichier
+- `GET /api/files/{id}` — Détail d’un fichier
+- `PUT /api/files/{id}` — Modifier un fichier
+- `DELETE /api/files/{id}` — Supprimer un fichier
+- `GET /api/files/{id}/view` — Visualiser un fichier
+- `GET /api/files/{id}/download` — Télécharger un fichier
+
+### Audit Logs (Historique)
+
+- `GET /api/audit-logs/latest` — Dernières actions globales (limit param)
+- `GET /api/audit-logs/users/{id}` — Dernières actions d’un utilisateur (limit param)
+
+### Utilisateurs (Admin only)
+
+- `GET /api/users` — Liste des utilisateurs
+- `POST /api/users` — Créer un utilisateur
+- `PUT /api/users/{id}` — Modifier un utilisateur
+- `DELETE /api/users/{id}` — Supprimer un utilisateur
+- `GET /api/users/search?q=...` — Recherche d’utilisateurs (autocomplete)
+
+---
+
+## Authentification
+
+- Utilisation de **Laravel Sanctum** pour les tokens API.
+- Le frontend doit envoyer le token dans le header `Authorization: Bearer {token}`.
+- Les routes protégées utilisent le middleware `auth:sanctum`.
+
+---
+
+## Structure du projet
+
+```
+app/
+  Http/
+    Controllers/
+      Api/
+        AuthController.php
+        ServiceController.php
+        AxeController.php
+        DossierController.php
+        FileController.php
+        AuditLogController.php
+        UserController.php
+  Models/
+    User.php
+    Service.php
+    Axe.php
+    Dossier.php
+    File.php
+    AuditLog.php
+database/
+  migrations/
+routes/
+  api.php
+```
+
+---
+
+## Configuration
+
+### CORS
+
+
+
+```php
+'paths' => ['api/*', 'sanctum/csrf-cookie'],
+'allowed_origins' => ['http://localhost:5173'],
+```
+
+### Base de données
+
+Par défaut: MySQL.
+
+Configure `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ocp_documents
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Pour SQLite à la place:
+
+```env
+DB_CONNECTION=sqlite
+```
+
+Et crée le fichier:
+
+```bash
+touch database/database.sqlite
+```
+
+---
+
+## Scripts utiles
+
+```bash
+composer run setup           # Installation complète + migrations
+composer run dev            # Serveur + queue + logs + Vite
+composer run test           # Tests PHPUnit
+php artisan migrate:fresh   # Reset base de données
+php artisan tinker          # Console interactive
+```
+
+---
+
+## Notes / limites
+
+- Par défaut, la base de données est MySQL. Pour le développement, tu peux utiliser SQLite.
+- Assure-toi que CORS est configuré correctement pour le frontend.
+- Les permissions et rôles sont gérés côté backend (vérifie les policies/middleware si ajoutés).
+
+---
+
+## Contribution
+
+Si tu veux contribuer:
+
+- Créer une branche (feature)
+- Faire des commits clairs
+- Ouvrir une Pull Request
+
+---
+
+## Roadmap (idées)
+
+- Ajouter des tests unitaires et d’intégration
+- Implémenter des policies pour les rôles (Admin/Chef/Technicien)
+- Ajouter pagination sur les endpoints list
+- Export de logs (CSV/Excel)
+
+---
+
+## Licence
+
+Ce projet est distribué sous la licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
+
+## Author
+
+**Maelainine El Khalsi**
+
+- GitHub: https://github.com/Maelainine-ElKhalsi
+- inkedin.com/in/maelainine-el-khalsi-731a293bb
