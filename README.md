@@ -297,4 +297,5 @@ Ce projet est distribué sous la licence MIT. Voir le fichier `LICENSE` pour plu
 **Maelainine El Khalsi**
 
 - GitHub: https://github.com/Maelainine-ElKhalsi
-- inkedin.com/in/maelainine-el-khalsi-731a293bb
+- **Email:** [maelainineelkhalsi@gmail.com](mailto:maelainineelkhalsi@gmail.com)
+- **LinkedIn:** [Maelainine El Khalsi](https://www.linkedin.com/in/maelainine-el-khalsi-731a293bb)
